@@ -1,6 +1,6 @@
 # lab-vagrant-ansible
 
-##Ansible
+## Ansible
 
 As an Infrastructure as Code (IaC) tool, Ansible has a similarity to Vagrant. But Ansible is much more powerful and is widely used in production environments to manage baremetal and virtualized hosts running Linux, Unix or Windows, both on-premises and in the cloud.
 
@@ -14,37 +14,6 @@ Vagrant supports several provisioners including Ansible. There are two different
 
 Vagrantfile
 
-Choose an empty directory and create the following Vagrantfile:
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-	
 Vagrant.configure("2") do |config|
     config.vm.box = "bento/ubuntu-18.04"
  
