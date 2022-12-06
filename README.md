@@ -21,7 +21,8 @@ Vagrant prend en charge plusieurs fournisseurs, dont Ansible. Il existe deux app
 
 ### Vagrantfile
 
-  Vagrant.configure("2") do |config|
+'''
+Vagrant.configure("2") do |config|
     config.vm.box = "generic/debian10"
  
     config.vm.define "lb" do |machine|
@@ -49,7 +50,8 @@ Vagrant prend en charge plusieurs fournisseurs, dont Ansible. Il existe deux app
  
         machine.vm.synced_folder ".", "/vagrant", mount_options: [ "umask=077" ]
     end
-  end
+end
+'''
 
   * Nous définissons d'abord une équilibre de charge (lb= load-balancer) et le connectons à private_network avec une adresse IP. Nous 'nattons' également le port 8080 de notre machine hôte vers le port 80 de la machine virtuelle, afin que nous puissions y accéder via notre navigateur.
 
