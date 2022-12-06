@@ -2,20 +2,26 @@
 
 ## Ansible
 
-As an Infrastructure as Code (IaC) tool, Ansible has a similarity to Vagrant. But Ansible is much more powerful and is widely used in production environments to manage baremetal and virtualized hosts running Linux, Unix or Windows, both on-premises and in the cloud.
+En tant qu'outil IaC, Ansible présente une similitude avec Vagrant. Mais Ansible est beaucoup plus puissant et est largement utilisé dans les environnements de production pour gérer les hôtes de type bare-metal, exécutant Linux / Unix / Windows, à la fois en local mais aussi dans le cloud.
 
-Ansible works by connecting from a Control Node where Ansible is installed, to Managed Nodes where the configuration is applied. Ansible does not need to be installed in the Managed Nodes, it simply connects to them via SSH for Linux and Unix hosts and Windows Remote Management (WinRM) for Windows hosts. The only requirements are Python in Linux and Unix hosts and PowerShell in Windows hosts.
+Ansible fonctionne en se connectant à partir d'un nœud de contrôle où il est installé, à des nœuds gérés où la configuration est appliquée. 
+Ansible n'a pas besoin d'être installé dans les nœuds gérés, il s'y connecte simplement via SSH pour les hôtes Linux et Unix et la gestion à distance Windows (WinRM) pour les hôtes Windows. Les seules exigences sont Python dans les hôtes Linux et Unix et PowerShell dans les hôtes Windows.
 
 ## Vagrant avec Ansible
 
-Vagrant supports several provisioners including Ansible. There are two different Ansible provisioners in Vagrant: Ansible and Ansible Local. The Ansible provisioner runs Ansible from your guest, while Ansible Local installs Ansible in a VM provisioned by Vagrant (Control Node) and uses it to configure other VMs (Managed Nodes). Since Ansible cannot run on Windows and I want to keep the requisites in your guest machine limited to Vagrant and VirtualBox, we’re going to use Ansible Local.
+Vagrant prend en charge plusieurs fournisseurs, dont Ansible. Il existe deux approvisionneurs Ansible différents dans Vagrant : Ansible et Ansible Local. 
+
+  * L'approvisionneur Ansible exécute Ansible à partir de votre invité
+  * Ansible Local installe Ansible dans une machine virtuelle provisionnée par Vagrant (nœud de contrôle) et l'utilise pour configurer d'autres machines virtuelles (nœuds gérés). 
+  
+  => Étant donné qu'Ansible ne peut pas s'exécuter sur Windows et que je souhaite que les éléments requis sur votre machine invitée soient limités à Vagrant et VirtualBox, nous allons utiliser Ansible Local.
 
 ![image](https://user-images.githubusercontent.com/45850849/204154464-a5cb99c5-a86a-49da-93ef-5bffe41f081f.png)
 
 Vagrantfile
 
 Vagrant.configure("2") do |config|
-    config.vm.box = "bento/ubuntu-18.04"
+    config.vm.box = "generic/debian10"
  
     config.vm.define "lb" do |machine|
         machine.vm.network "private_network", ip: "172.17.177.21"
