@@ -18,7 +18,8 @@ Vagrant prend en charge plusieurs fournisseurs, dont Ansible. Il existe deux app
 
 ![image](https://user-images.githubusercontent.com/45850849/204154464-a5cb99c5-a86a-49da-93ef-5bffe41f081f.png)
 
-Vagrantfile
+
+### Vagrantfile
 
 Vagrant.configure("2") do |config|
     config.vm.box = "generic/debian10"
@@ -50,14 +51,16 @@ Vagrant.configure("2") do |config|
     end
 end
 
-First we define a load balancer (lb) node and connect it to private_network with an IP address. We also forward port 8080 in our host machine to port 80 in the VM, so we can access it through our browser.
+  * Nous définissons d'abord une équilibre de charge (lb= load-balancer) et le connectons à private_network avec une adresse IP. Nous 'nattons' également le port 8080 de notre machine hôte vers le port 80 de la machine virtuelle, afin que nous puissions y accéder via notre navigateur.
 
-Then we define two web nodes (node1 and node2) and join them to private_network with an IP address. These nodes have no port forward so they are not accessible through our browser.
+  * Ensuite, nous définissons deux nœuds Web (node1 et node2) et les joignons à private_network avec une adresse IP. Ces nœuds n'ont pas de transfert de port, ils ne sont donc pas accessibles via notre navigateur.
 
-Finally we define the Ansible controller (controller) that is going to be used by Vagrant to configure the other nodes. We join it to private_network with an IP. We use the ansible_local provisioner as discussed before, indicating that we want to run the playbook on all hosts (ansible.limit = "all") and indicate the path to the playbook, inventory and ansible.cfg files. Finally we override the default configuration for the synced_folder, using a umask to remove permissions from all users except vagrant. This is necessary otherwise both Ansible and ssh will complain for security reasons and fail.
-Ansible configuration
+  * Puis nous définissons le contrôleur Ansible (controller) qui va être utilisé par Vagrant pour configurer les autres nœuds. Nous le joignons à private_network avec une adresse IP. Nous utilisons le fournisseur ansible_local comme indiqué précédemment, indiquant que nous voulons exécuter le playbook sur tous les hôtes (ansible.limit = "all") et indiquons le chemin vers les fichiers playbook, inventaire et ansible.cfg. 
+  
+  * Enfin, nous remplaçons la configuration par défaut pour le synced_folder, en utilisant un umask pour supprimer les autorisations de tous les utilisateurs sauf vagrant. Ceci est nécessaire sinon Ansible et ssh se plaindront pour des raisons de sécurité et échoueront.
+Configuration possible
 
-Create a provisioning directory where we’ll place all Ansible related files. By default Vagrant autogenerates an inventory that is placed in the guest VM under the path /tmp/vagrant-ansible/inventory/vagrant_ansible_local_inventory, but since we have no name resolution we cannot use it. Instead create a hosts file under the provisioning directory:
+Créez un répertoire de provisionnement dans lequel nous placerons tous les fichiers liés à Ansible. Par défaut, Vagrant génère automatiquement un inventaire qui est placé dans la machine virtuelle invitée sous le chemin /tmp/vagrant-ansible/inventory/vagrant_ansible_local_inventory, mais comme nous n'avons pas de résolution de nom, nous ne pouvons pas l'utiliser. Créez plutôt un fichier hosts sous le répertoire de provisioning :
 
 controller ansible_connection=local
  lb         ansible_host=172.17.177.21 ansible_ssh_private_key_file=/vagrant/.vagrant/machines/lb/virtualbox/private_key
