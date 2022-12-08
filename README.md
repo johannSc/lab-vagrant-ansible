@@ -63,20 +63,30 @@ end
   * Enfin, nous remplaçons la configuration par défaut pour le synced_folder, en utilisant un umask pour supprimer les autorisations de tous les utilisateurs sauf vagrant. Ceci est nécessaire sinon Ansible et ssh se plaindront pour des raisons de sécurité et échoueront.
 Configuration possible
 
-Créez un répertoire de provisionnement dans lequel nous placerons tous les fichiers liés à Ansible. Par défaut, Vagrant génère automatiquement un inventaire qui est placé dans la machine virtuelle invitée sous le chemin /tmp/vagrant-ansible/inventory/vagrant_ansible_local_inventory, mais comme nous n'avons pas de résolution de nom, nous ne pouvons pas l'utiliser. Créez plutôt un fichier hosts sous le répertoire de provisioning :
+Créez un répertoire de provisionnement dans lequel nous placerons tous les fichiers liés à Ansible. 
 
-controller ansible_connection=local
+Créons un fichier hosts sous le répertoire de provisioning :
+
+```
+ controller ansible_connection=local
  lb         ansible_host=172.17.177.21 ansible_ssh_private_key_file=/vagrant/.vagrant/machines/lb/virtualbox/private_key
  node1      ansible_host=172.17.177.22 ansible_ssh_private_key_file=/vagrant/.vagrant/machines/node1/virtualbox/private_key
  node2      ansible_host=172.17.177.23 ansible_ssh_private_key_file=/vagrant/.vagrant/machines/node2/virtualbox/private_key
+ 
  [nginx]
  lb
  node[1:2]
+```
 
-This file is telling Ansible how to connect to the hosts. It lists the IP addresses that we defined in Vagrantfile and the private keys to connect to every host. Vagrant places the private keys under .vagrant/machines/<machine name>/virtualbox/private_key paths. We also define an nginx group which consists of the load balancer and both web nodes.
+Ce fichier indique à Ansible comment se connecter aux hôtes. 
+  * Il répertorie les adresses IP que nous avons définies dans Vagrantfile et les clés privées pour se connecter à chaque hôte. 
+  * Vagrant place les clés privées sous les chemins .vagrant/machines/<nom de la machine>/virtualbox/private_key. 
+  * Nous définissons également un groupe nginx composé de l'équilibreur de charge et des deux nœuds Web.
 
-The next file to create is the Ansible Playbook (playbook.yml) which tells Ansible which tasks to execute in which hosts:
 
+Le prochain fichier à créer est le Playbook Ansible (playbook.yml) qui indique à Ansible quelles tâches exécuter dans quels hôtes :
+
+```
 ---
 - hosts: nginx
   tasks:
@@ -113,7 +123,8 @@ The next file to create is the Ansible Playbook (playbook.yml) which tells Ansib
         name: nginx
         state: restarted
       become: yes
-      
+
+```
 
 To keep it simple we go in a linear fashion: first use apt to install nginx in the nginx group from the inventory (lb, node1 and node2). Then we copy a welcome message to node1 and node2 (/var/www/html/index.html). Then override the nginx default configuration in the load balancer (/etc/nginx/sites-enabled/default) with the content of nginx.conf, and restart the service to load the new configuration.
 
