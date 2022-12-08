@@ -126,10 +126,14 @@ Le prochain fichier à créer est le Playbook Ansible (playbook.yml) qui indique
 
 ```
 
-To keep it simple we go in a linear fashion: first use apt to install nginx in the nginx group from the inventory (lb, node1 and node2). Then we copy a welcome message to node1 and node2 (/var/www/html/index.html). Then override the nginx default configuration in the load balancer (/etc/nginx/sites-enabled/default) with the content of nginx.conf, and restart the service to load the new configuration.
+Pour faire simple, nous procédons de manière linéaire : 
+ - utilisez d'abord apt pour installer nginx dans le groupe nginx à partir de l'inventaire (lb, node1 et node2). 
+ - Ensuite, nous copions un message de bienvenue sur node1 et node2 (/var/www/html/index.html). 
+ - Remplacez ensuite la configuration par défaut de nginx dans l'équilibreur de charge (/etc/nginx/sites-enabled/default) avec le contenu de nginx.conf, et redémarrez le service pour charger la nouvelle configuration.
 
-Next, inside the provisioning directory, create a files directory and create the nginx.conf file inside of it:
-
+Ensuite, dans le répertoire de provisioning, créez un répertoire de fichiers et créez le fichier nginx.conf à l'intérieur :
+ 
+```
 upstream hello {
     server 172.17.177.22;
     server 172.17.177.23;
@@ -142,29 +146,28 @@ server {
         proxy_pass http://hello;
     }
 }
+```
 
-This file configures nginx in the lb node as a load balancer for the two web nodes. It defaults to round robin.
+Ce fichier configure nginx dans le nœud lb en tant qu'équilibreur de charge pour les deux nœuds Web (Il s'agit par défaut d'un round robin)
 
-Finally we’ll create the ansible.cfg file inside the provisioning directory to allow ssh to connect to the controlled nodes:
+Enfin, nous allons créer le fichier ansible.cfg dans le répertoire de provisioning pour permettre à ssh de se connecter aux nœuds contrôlés :
 
-[defaults]
+```
+ [defaults]
 host_key_checking = no
+```
+ 
+Vous devriez avoir une structure de répertoire comme celle-ci :
+ 
 
-You should have a directory structure like this:
+Il est temps de commencer ! Ouvrez un terminal où Vagrantfile est placé et entrez :
 
-It’s time to start it! Open a terminal where Vagrantfile is placed and enter:
+```
+ vagrant up
+```
+ 
+Attendez que Vagrant crée 4 machines virtuelles, installe Ansible dans le nœud du contrôleur et exécute le playbook pour configurer l'équilibreur de charge et les deux nœuds Web.
 
-vagrant up
+Allez maintenant sur http://localhost:8080 et vous verrez le message de bienvenue de node1 :
 
-Wait while Vagrant creates 4 virtual machines, installs Ansible in the controller node and runs the playbook to configure the load balancer and both web nodes.
-
-Now go to http://localhost:8080 and you will see the welcome message from node1:
-
-Reload the page several times and you will see the message change as the load balancer forwards the requests to node1 and node2 alternatively.
-Wrapping up
-
-Enter vagrant halt to stop the VMs and save some resources, or vagrant destroy -f to delete them, concluding this demo.
-
-Vagrant is a very nice way to test with virtual machines. It can create a single VM or several VMs connected by virtual networks.
-
-Integration with Ansible allows to test Ansible playbooks in your machine. It also supports other provisioners like Chef, Puppet, Docker and more, enabling the development of complex setups in a virtual environment, without the need for real servers.
+Rechargez la page plusieurs fois et vous verrez le message changer au fur et à mesure que l'équilibreur de charge transmet les requêtes au nœud1 et au nœud2 alternativement.
