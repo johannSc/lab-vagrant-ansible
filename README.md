@@ -171,3 +171,5 @@ Attendez que Vagrant crée 4 machines virtuelles, installe Ansible dans le nœud
 Allez maintenant sur http://localhost:8080 et vous verrez le message de bienvenue de node1 :
 
 Rechargez la page plusieurs fois et vous verrez le message changer au fur et à mesure que l'équilibreur de charge transmet les requêtes au nœud1 et au nœud2 alternativement.
+
+source: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiDsZyB8en7AhVZSKQEHVDtBFcQFnoECA0QAQ&url=https%3A%2F%2Forlando-ramirez.com%2F2020%2F12%2F06%2Fprovisioning-virtual-machines-with-ansible-and-vagrant%2F&usg=AOvVaw2UuqBybzLceipulTAruij-
