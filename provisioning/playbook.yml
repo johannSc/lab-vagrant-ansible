@@ -1,0 +1,36 @@
+---
+- hosts: nginx
+  tasks:
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+      become: yes
+
+- hosts: node1
+  tasks:
+    - name: Copy hello from node 1
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: 'Hello from Node 1!'
+      become: yes
+
+- hosts: node2
+  tasks:
+    - name: Copy hello from node 2
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: 'Hello from Node 2!'
+      become: yes
+
+- hosts: lb
+  tasks:
+    - name: Copy nginx.conf to load balancer
+      ansible.builtin.copy:
+        src: nginx.conf
+        dest: /etc/nginx/sites-enabled/default
+      become: yes
+    - name: Restart nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+      become: yes
