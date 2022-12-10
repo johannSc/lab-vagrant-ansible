@@ -158,6 +158,15 @@ host_key_checking = no
 ```
  
 Vous devriez avoir une structure de répertoire comme celle-ci :
+
+vagrant
+-- Vagrantfile
+-- provisioning/
+  -- ansible.cfg
+  -- hosts
+  -- playbook.yml
+  -- files/
+    -- nginx.conf
  
 
 Il est temps de commencer ! Ouvrez un terminal où Vagrantfile est placé et entrez :
