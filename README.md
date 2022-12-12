@@ -26,20 +26,20 @@ Vagrant.configure("2") do |config|
     config.vm.box = "generic/debian10"
  
     config.vm.define "lb" do |machine|
-        machine.vm.network "private_network", ip: "172.17.177.21"
+        machine.vm.network "private_network", ip: "192.168.56.21"
         machine.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
     end
  
     config.vm.define "node1" do |machine|
-        machine.vm.network "private_network", ip: "172.17.177.22"
+        machine.vm.network "private_network", ip: "192.168.56.22"
     end
  
     config.vm.define "node2" do |machine|
-        machine.vm.network "private_network", ip: "172.17.177.23"
+        machine.vm.network "private_network", ip: "192.168.56.23"
     end
  
     config.vm.define "controller" do |machine|
-        machine.vm.network "private_network", ip: "172.17.177.11"
+        machine.vm.network "private_network", ip: "192.168.56.11"
  
         machine.vm.provision "ansible_local" do |ansible|
             ansible.playbook = "provisioning/playbook.yml"
@@ -69,9 +69,9 @@ Créons un fichier hosts sous le répertoire de provisioning :
 
 ```
  controller ansible_connection=local
- lb         ansible_host=172.17.177.21 ansible_ssh_private_key_file=/vagrant/.vagrant/machines/lb/virtualbox/private_key
- node1      ansible_host=172.17.177.22 ansible_ssh_private_key_file=/vagrant/.vagrant/machines/node1/virtualbox/private_key
- node2      ansible_host=172.17.177.23 ansible_ssh_private_key_file=/vagrant/.vagrant/machines/node2/virtualbox/private_key
+ lb         ansible_host=192.168.56.21 ansible_ssh_private_key_file=/vagrant/.vagrant/machines/lb/virtualbox/private_key
+ node1      ansible_host=192.168.56.22 ansible_ssh_private_key_file=/vagrant/.vagrant/machines/node1/virtualbox/private_key
+ node2      ansible_host=192.168.56.23 ansible_ssh_private_key_file=/vagrant/.vagrant/machines/node2/virtualbox/private_key
  
  [nginx]
  lb
@@ -97,18 +97,18 @@ Le prochain fichier à créer est le Playbook Ansible (playbook.yml) qui indique
 
 - hosts: node1
   tasks:
-    - name: Copy hello from node 1
+    - name: copie de l'index sur le node1
       ansible.builtin.copy:
         dest: /var/www/html/index.html
-        content: 'Hello from Node 1!'
+        content: 'Coucou du Node 1!'
       become: yes
 
 - hosts: node2
   tasks:
-    - name: Copy hello from node 2
+    - name: copie de l'index sur le node2
       ansible.builtin.copy:
         dest: /var/www/html/index.html
-        content: 'Hello from Node 2!'
+        content: 'Coucou du Node 2!'
       become: yes
 
 - hosts: lb
@@ -135,8 +135,8 @@ Ensuite, dans le répertoire de provisioning, créez un répertoire de fichiers 
  
 ```
 upstream hello {
-    server 172.17.177.22;
-    server 172.17.177.23;
+    server 192.168.56.22;
+    server 192.168.56.23;
 }
 
 server {
@@ -183,4 +183,4 @@ Allez maintenant sur http://localhost:8080 et vous verrez le message de bienvenu
 
 Rechargez la page plusieurs fois et vous verrez le message changer au fur et à mesure que l'équilibreur de charge transmet les requêtes au nœud1 et au nœud2 alternativement.
 
-source: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiDsZyB8en7AhVZSKQEHVDtBFcQFnoECA0QAQ&url=https%3A%2F%2Forlando-ramirez.com%2F2020%2F12%2F06%2Fprovisioning-virtual-machines-with-ansible-and-vagrant%2F&usg=AOvVaw2UuqBybzLceipulTAruij-
+source: https://orlando-ramirez.com/2020/12/06/provisioning-virtual-machines-with-ansible-and-vagrant/
